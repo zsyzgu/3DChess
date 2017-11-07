@@ -5,7 +5,7 @@ using Windows.Kinect;
 
 public class View3D : MonoBehaviour
 {
-    private const int DOWNSAMPLE = 4;
+    private const int DOWNSAMPLE = 2;
     private const float M_PER_MM = 0.001f;
     private const float MAX_DISTANCE = 8f;
     private const float TAN_HALF_H_FOV = 0.7133f;
@@ -92,6 +92,10 @@ public class View3D : MonoBehaviour
                 vertices[index].z = getAvgDepth(depthData, x, y, depthWidth, depthHeight) * M_PER_MM;
                 vertices[index].x = vertices[index].z * TAN_HALF_H_FOV * (2.0f * x / depthWidth - 1.0f);
                 vertices[index].y = vertices[index].z * TAN_HALF_V_FOV * -(2.0f * y / depthHeight - 1.0f);
+                /*if (x == depthWidth / 2 && y == depthHeight / 2)
+                {
+                    Debug.Log(vertices[index].z);
+                }*/
                 vertices[index].z -= MAX_DISTANCE;
 
                 ColorSpacePoint colorSpacePoint = colorSpace[y * depthWidth + x];
