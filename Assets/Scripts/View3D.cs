@@ -5,8 +5,11 @@ using Windows.Kinect;
 
 public class View3D : MonoBehaviour
 {
-    private const int DOWNSAMPLE = 2;
-    private const float DEPTH_SCALE = 0.1f;
+    private const int DOWNSAMPLE = 4;
+    private const float M_PER_MM = 0.001f;
+    private const float MAX_DISTANCE = 8f;
+    private const float TAN_HALF_H_FOV = 0.7133f;
+    private const float TAN_HALF_V_FOV = 0.4774f;
 
     private CoordinateMapper mapper;
     private Mesh mesh;
@@ -41,7 +44,7 @@ public class View3D : MonoBehaviour
             {
                 int index = (y * width) + x;
 
-                vertices[index] = new Vector3(x - width / 2, -(y - height / 2), 100);
+                vertices[index] = new Vector3(x - width / 2, -(y - height / 2), 0) * M_PER_MM;
                 uv[index] = new Vector2((float)x / width, (float)y / height);
 
                 if (x != (width - 1) && y != (height - 1))
@@ -84,26 +87,18 @@ public class View3D : MonoBehaviour
         {
             for (int x = 0; x < depthWidth; x += DOWNSAMPLE)
             {
-                int rawIndex = y * depthWidth + x;
-                int indexX = x / DOWNSAMPLE;
-                int indexY = y / DOWNSAMPLE;
-                int downIndex = indexY * (depthWidth / DOWNSAMPLE) + indexX;
+                int index = (y / DOWNSAMPLE) * (depthWidth / DOWNSAMPLE) + (x / DOWNSAMPLE);
 
-                float avgDepth = getAvgDepth(depthData, x, y, depthWidth, depthHeight) * DEPTH_SCALE;
-                vertices[downIndex].z = avgDepth;
+                vertices[index].z = getAvgDepth(depthData, x, y, depthWidth, depthHeight) * M_PER_MM;
+                vertices[index].x = vertices[index].z * TAN_HALF_H_FOV * (2.0f * x / depthWidth - 1.0f);
+                vertices[index].y = vertices[index].z * TAN_HALF_V_FOV * -(2.0f * y / depthHeight - 1.0f);
+                vertices[index].z -= MAX_DISTANCE;
 
-                if (depthData[rawIndex] == 0)
-                {
-                    vertices[downIndex].z = 500;
-                } else
-                {
-                    vertices[downIndex].z = depthData[rawIndex] * DEPTH_SCALE;
-                }
-
-                ColorSpacePoint colorSpacePoint = colorSpace[rawIndex];
-                uv[downIndex] = new Vector2(colorSpacePoint.X / colorWidth, colorSpacePoint.Y / colorHeight);
+                ColorSpacePoint colorSpacePoint = colorSpace[y * depthWidth + x];
+                uv[index] = new Vector2(colorSpacePoint.X / colorWidth, colorSpacePoint.Y / colorHeight);
             }
         }
+        transform.position = new Vector3(0f, 0f, MAX_DISTANCE); //To evade the near clipping planes 
 
         mesh.vertices = vertices;
         mesh.uv = uv;
@@ -123,7 +118,7 @@ public class View3D : MonoBehaviour
 
                 if (depthData[index] == 0)
                 {
-                    sum += 5000;
+                    sum += MAX_DISTANCE / M_PER_MM;
                 } else
                 {
                     sum += depthData[index];
