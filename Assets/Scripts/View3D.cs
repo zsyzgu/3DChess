@@ -75,35 +75,38 @@ public class View3D : MonoBehaviour
         GetComponent<Renderer>().material.mainTexture = SourceManager.getColorTexture();
 
         ushort[] depthData = SourceManager.getDepthData();
-        int depthWidth = SourceManager.getDepthWidth();
-        int depthHeight = SourceManager.getDepthHeight();
-        int colorWidth = SourceManager.getColorWidth();
-        int colorHeight = SourceManager.getColorHeight();
-
-        ColorSpacePoint[] colorSpace = new ColorSpacePoint[depthData.Length];
-        mapper.MapDepthFrameToColorSpace(depthData, colorSpace);
-
-        for (int y = 0; y < depthHeight; y += DOWNSAMPLE)
+        if (depthData != null)
         {
-            for (int x = 0; x < depthWidth; x += DOWNSAMPLE)
+            int depthWidth = SourceManager.getDepthWidth();
+            int depthHeight = SourceManager.getDepthHeight();
+            int colorWidth = SourceManager.getColorWidth();
+            int colorHeight = SourceManager.getColorHeight();
+
+            ColorSpacePoint[] colorSpace = new ColorSpacePoint[depthData.Length];
+            mapper.MapDepthFrameToColorSpace(depthData, colorSpace);
+
+            for (int y = 0; y < depthHeight; y += DOWNSAMPLE)
             {
-                int index = (y / DOWNSAMPLE) * (depthWidth / DOWNSAMPLE) + (x / DOWNSAMPLE);
+                for (int x = 0; x < depthWidth; x += DOWNSAMPLE)
+                {
+                    int index = (y / DOWNSAMPLE) * (depthWidth / DOWNSAMPLE) + (x / DOWNSAMPLE);
 
-                vertices[index].z = getAvgDepth(depthData, x, y, depthWidth, depthHeight) * M_PER_MM;
-                vertices[index].x = vertices[index].z * TAN_HALF_H_FOV * (2.0f * x / depthWidth - 1.0f);
-                vertices[index].y = vertices[index].z * TAN_HALF_V_FOV * -(2.0f * y / depthHeight - 1.0f);
-                vertices[index].z -= MAX_DISTANCE;
+                    vertices[index].z = getAvgDepth(depthData, x, y, depthWidth, depthHeight) * M_PER_MM;
+                    vertices[index].x = vertices[index].z * TAN_HALF_H_FOV * (2.0f * x / depthWidth - 1.0f);
+                    vertices[index].y = vertices[index].z * TAN_HALF_V_FOV * -(2.0f * y / depthHeight - 1.0f);
+                    vertices[index].z -= MAX_DISTANCE;
 
-                ColorSpacePoint colorSpacePoint = colorSpace[y * depthWidth + x];
-                uv[index] = new Vector2(colorSpacePoint.X / colorWidth, colorSpacePoint.Y / colorHeight);
+                    ColorSpacePoint colorSpacePoint = colorSpace[y * depthWidth + x];
+                    uv[index] = new Vector2(colorSpacePoint.X / colorWidth, colorSpacePoint.Y / colorHeight);
+                }
             }
-        }
-        transform.position = new Vector3(0f, 0f, MAX_DISTANCE); //To evade the near clipping planes 
+            transform.position = new Vector3(0f, 0f, MAX_DISTANCE); //To evade the near clipping planes 
 
-        mesh.vertices = vertices;
-        mesh.uv = uv;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
+            mesh.vertices = vertices;
+            mesh.uv = uv;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+        }
     }
 
     float getAvgDepth(ushort[] depthData, int xBase, int yBase, int width, int height)

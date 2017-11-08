@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Windows.Kinect;
+using System.Threading.Tasks;
 
 public class SourceManager : MonoBehaviour {
     static private SourceManager instance;
 
     private KinectSensor sensor;
-    private MultiSourceFrameReader reader;
+    private ColorFrameReader colorReader;
+    private InfraredFrameReader infraredReader;
+    private DepthFrameReader depthReader;
     private CoordinateMapper mapper;
 
     private int colorWidth;
@@ -83,7 +86,9 @@ public class SourceManager : MonoBehaviour {
 
         if (sensor != null)
         {
-            reader = sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Infrared | FrameSourceTypes.Depth);
+            colorReader = sensor.ColorFrameSource.OpenReader();
+            infraredReader = sensor.InfraredFrameSource.OpenReader();
+            depthReader = sensor.DepthFrameSource.OpenReader();
             mapper = sensor.CoordinateMapper;
 
             var colorFrameDesc = sensor.ColorFrameSource.CreateFrameDescription(ColorImageFormat.Rgba);
@@ -110,7 +115,7 @@ public class SourceManager : MonoBehaviour {
             }
         }
 	}
-	
+    
     void updateColor(ColorFrame colorFrame)
     {
         if (colorFrame != null)
@@ -123,22 +128,25 @@ public class SourceManager : MonoBehaviour {
             colorFrame = null;
         }
     }
-
+    
     void updateInfrared(InfraredFrame infraredFrame)
     {
         if (infraredFrame != null)
         {
             infraredFrame.CopyFrameDataToArray(infraredRawData);
-
-            int index = 0;
-            foreach(var ir in infraredRawData)
+            
+            Parallel.For(0, infraredHeight, y =>
             {
-                byte intensity = (byte)(ir >> 8);
-                infraredData[index++] = intensity;
-                infraredData[index++] = intensity;
-                infraredData[index++] = intensity;
-                infraredData[index++] = 255;
-            }
+                for (int x = 0; x < infraredWidth; x++)
+                {
+                    int index = y * infraredWidth + x;
+                    byte intensity = (byte)(infraredRawData[index] >> 8);
+                    infraredData[(index << 2) | 0] = intensity;
+                    infraredData[(index << 2) | 1] = intensity;
+                    infraredData[(index << 2) | 2] = intensity;
+                    infraredData[(index << 2) | 3] = 255;
+                }
+            });
 
             infraredTexture.LoadRawTextureData(infraredData);
             infraredTexture.Apply();
@@ -160,24 +168,36 @@ public class SourceManager : MonoBehaviour {
     }
 
 	void Update () {
-		if (reader != null)
+        if (colorReader != null)
         {
-            var frame = reader.AcquireLatestFrame();
-            if (frame != null)
-            {
-                updateColor(frame.ColorFrameReference.AcquireFrame());
-                updateInfrared(frame.InfraredFrameReference.AcquireFrame());
-                updateDepth(frame.DepthFrameReference.AcquireFrame());
-            }
+            updateColor(colorReader.AcquireLatestFrame());
+        }
+        if (infraredReader != null)
+        {
+            updateInfrared(infraredReader.AcquireLatestFrame());
+        }
+        if (depthReader != null)
+        {
+            updateDepth(depthReader.AcquireLatestFrame());
         }
 	}
 
     void OnApplicationQuit()
     {
-        if (reader != null)
+        if (colorReader != null)
         {
-            reader.Dispose();
-            reader = null;
+            colorReader.Dispose();
+            colorReader = null;
+        }
+        if (infraredReader != null)
+        {
+            infraredReader.Dispose();
+            infraredReader = null;
+        }
+        if (depthReader != null)
+        {
+            depthReader.Dispose();
+            depthReader = null;
         }
 
         if (sensor != null)
