@@ -94,6 +94,9 @@
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
     </Reference>
+    <Reference Include="OpenCvSharp">
+      <HintPath>Assets/Plugins/OpenCvSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Managed/Mono.Cecil">
       <HintPath>C:/Program Files/Unity/Editor/Data\Managed/Mono.Cecil.dll</HintPath>
     </Reference>
@@ -106,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DepthDataFilter.cs" />
+    <Compile Include="Assets\Scripts\Recognition.cs" />
     <Compile Include="Assets\Scripts\SourceManager.cs" />
     <Compile Include="Assets\Scripts\View2D.cs" />
     <Compile Include="Assets\Scripts\View3D.cs" />
