@@ -4,3 +4,5 @@
 /.vs
 *.png
 *.jpg
+*.pcd
+*.meta
