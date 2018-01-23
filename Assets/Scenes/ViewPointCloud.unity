@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 150352952}
   - component: {fileID: 150352953}
+  - component: {fileID: 150352954}
   m_Layer: 0
   m_Name: Object
   m_TagString: Untagged
@@ -153,22 +154,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07e40852c1e2da544b432f1c5692c5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: scene
-  maximumVertices: 100000
-  size: 0.008
+  fileName: scene.pcd
+  size: 0.006
   sprite: {fileID: 10904, guid: 0000000000000000f000000000000000, type: 0}
   shader: {fileID: 4800000, guid: 8304ab2900e5c7a40b998b21fc2e593a, type: 3}
-  should: 0.5
-  time: 1
-  speed: 1
-  noiseScale: 1
-  noiseSpeed: 1
-  targetSpeed: 1
-  noisy: 0.1
-  targetDisplace: {fileID: 0}
-  details: 32
-  circleRadius: 32
-  shaderBaked: {fileID: 0}
+--- !u!114 &150352954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 150352951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277f66a0ffcbb5b44b4152f4433d8e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2028411425
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +180,8 @@ GameObject:
   - component: {fileID: 2028411428}
   - component: {fileID: 2028411427}
   - component: {fileID: 2028411426}
-  - component: {fileID: 2028411430}
+  - component: {fileID: 2028411431}
+  - component: {fileID: 2028411432}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -251,7 +252,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2028411430
+--- !u!114 &2028411431
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -259,6 +260,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 2028411425}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 277f66a0ffcbb5b44b4152f4433d8e8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d258b2b1f70b5b42ab8dbb39209efcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2028411432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2028411425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d256145d5887204b9f835c6b3c04134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  f_UpdateInterval: 0.5

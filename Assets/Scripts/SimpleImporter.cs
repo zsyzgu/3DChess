@@ -22,7 +22,7 @@ namespace PointCloudExporter
 			}
 		}
 
-		public MeshInfos Load (string filePath, int maximumVertex = 65000)
+		public MeshInfos Load (string filePath)
 		{
             MeshInfos data = new MeshInfos();
 

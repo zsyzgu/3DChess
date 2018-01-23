@@ -13,10 +13,7 @@ public class PointCloudEditor : Editor {
 		PointCloudGenerator script = (PointCloudGenerator)target;
 		
 		GUILayout.Label("Initializing", EditorStyles.boldLabel);
-		if(GUILayout.Button("Generate")) {
-			script.Generate();
-		}
-		if(GUILayout.Button("Reset")) {
+		/*if(GUILayout.Button("Reset")) {
 			script.Reset();
 		}
 		GUILayout.Label("Modifying", EditorStyles.boldLabel);
@@ -30,6 +27,6 @@ public class PointCloudEditor : Editor {
 		if(GUILayout.Button("Save Baked Colors")) {
 			string fileName = EditorUtility.SaveFilePanel("Export .png file", "", "", "png");
 			File.WriteAllBytes(fileName, script.GetBakedMap().EncodeToPNG());
-		}
+		}*/
 	}
 }

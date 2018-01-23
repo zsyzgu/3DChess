@@ -309,12 +309,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CallPCL.cs" />
     <Compile Include="Assets\Scripts\ConnectWithKinect\SourceManager.cs" />
     <Compile Include="Assets\Scripts\ConnectWithKinect\View2D.cs" />
     <Compile Include="Assets\Scripts\ConnectWithKinect\View3D.cs" />
     <Compile Include="Assets\Scripts\EnablePointSize.cs" />
     <Compile Include="Assets\Scripts\MeshInfos.cs" />
     <Compile Include="Assets\Scripts\PointCloudGenerator.cs" />
+    <Compile Include="Assets\Scripts\ShowFPS.cs" />
     <Compile Include="Assets\Scripts\SimpleImporter.cs" />
     <Compile Include="Assets\Scripts\ViewPointCloud(dot)\ViewPointCloud.cs" />
   </ItemGroup>
