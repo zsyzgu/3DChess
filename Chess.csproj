@@ -280,9 +280,6 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="OpenCvSharp">
-      <HintPath>Assets/Plugins/OpenCvSharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Advertisements">
       <HintPath>C:/Users/c/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
@@ -312,16 +309,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\DepthDataFilter.cs" />
+    <Compile Include="Assets\Scripts\ConnectWithKinect\SourceManager.cs" />
+    <Compile Include="Assets\Scripts\ConnectWithKinect\View2D.cs" />
+    <Compile Include="Assets\Scripts\ConnectWithKinect\View3D.cs" />
     <Compile Include="Assets\Scripts\EnablePointSize.cs" />
     <Compile Include="Assets\Scripts\MeshInfos.cs" />
     <Compile Include="Assets\Scripts\PointCloudGenerator.cs" />
-    <Compile Include="Assets\Scripts\Recognition.cs" />
     <Compile Include="Assets\Scripts\SimpleImporter.cs" />
-    <Compile Include="Assets\Scripts\SourceManager.cs" />
-    <Compile Include="Assets\Scripts\View2D.cs" />
-    <Compile Include="Assets\Scripts\View3D.cs" />
-    <Compile Include="Assets\Scripts\ViewPointCloud.cs" />
+    <Compile Include="Assets\Scripts\ViewPointCloud(dot)\ViewPointCloud.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\PointCloud.shader" />
