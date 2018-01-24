@@ -18,6 +18,12 @@ namespace PointCloudExporter
         [DllImport("pc-recog", EntryPoint = "callUpdate")]
         public static extern IntPtr callUpdate();
 
+        [DllImport("pc-recog", EntryPoint = "callRegistration")]
+        public static extern void callRegistration();
+
+        [DllImport("pc-recog", EntryPoint = "callStop")]
+        public static extern void callStop();
+
         public static MeshInfos getMesh()
         {
             MeshInfos mesh = new MeshInfos();

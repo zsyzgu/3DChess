@@ -33,6 +33,10 @@ namespace PointCloudExporter
 		{
             points = CallPCL.getMesh();
             Generate(points, MeshTopology.Points);
+            if (Input.GetKey(KeyCode.R))
+            {
+                CallPCL.callRegistration();
+            }
         }
 
 		public void Generate (MeshInfos meshInfos, MeshTopology topology)
