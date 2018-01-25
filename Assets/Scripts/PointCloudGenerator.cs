@@ -17,91 +17,88 @@ namespace PointCloudExporter
 		public Texture sprite;
 		public Shader shader;
 
-		private MeshInfos points;
+		private List<MeshInfos> meshList;
 		private const int verticesMax = 64000;
 		private Mesh[] meshArray;
-		private Transform[] transformArray;
 		private Texture2D colorMapTexture;
 
 		void Start ()
 		{
             CallPCL.callStart();
-            //points = SimpleImporter.Instance.Load(fileName);
+            //meshList = SimpleImporter.Instance.Load(fileName, verticesMax);
         }
 		
 		void Update ()
 		{
-            points = CallPCL.getMesh();
-            Generate(points, MeshTopology.Points);
+            meshList = CallPCL.getMesh(verticesMax);
+            Generate();
             if (Input.GetKey(KeyCode.R))
             {
                 CallPCL.callRegistration();
             }
         }
 
-		public void Generate (MeshInfos meshInfos, MeshTopology topology)
+		public void Generate ()
 		{
-			for (int c = transform.childCount - 1; c >= 0; --c) {
-				Transform child = transform.GetChild(c);
-				DestroyImmediate(child.gameObject);
-			}
-
-            if (meshArray != null)
+            if (meshArray == null || meshArray.Length != meshList.Count)
             {
-                foreach (Mesh mesh in meshArray)
+                if (meshArray != null)
                 {
-                    if (mesh != null)
+                    foreach (Mesh mesh in meshArray)
                     {
-                        Destroy(mesh);
+                        if (mesh != null)
+                        {
+                            Destroy(mesh);
+                        }
                     }
                 }
+                meshArray = new Mesh[meshList.Count];
+            }
+            
+            for (int i = 0; i < meshList.Count; i++)
+            {
+                MeshInfos meshInfo = meshList[i];
+                int count = meshInfo.vertexCount;
+                int[] indices = new int[count];
+                Parallel.For(0, count, j => {
+                    indices[j] = j;
+                });
+                if (meshArray[i] == null)
+                {
+                    meshArray[i] = new Mesh();
+                }
+                Mesh mesh = meshArray[i];
+                if (mesh.vertexCount != meshInfo.vertices.Length)
+                {
+                    mesh.Clear();
+                } 
+                mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 16f);
+                mesh.vertices = meshInfo.vertices;
+                mesh.normals = meshInfo.normals;
+                mesh.colors = meshInfo.colors;
+                mesh.SetIndices(indices, MeshTopology.Points, 0);
             }
 
-            int vertexCount = meshInfos.vertexCount;
-			int meshCount = (int)Mathf.Ceil(vertexCount / (float)verticesMax);
-
-			meshArray = new Mesh[meshCount];
-			transformArray = new Transform[meshCount];
-
-			int index = 0;
-			int meshIndex = 0;
-
-			int resolution = GetNearestPowerOfTwo(Mathf.Sqrt(vertexCount));
-
-            while (meshIndex < meshCount) {
-                int count = verticesMax;
-                if (vertexCount <= verticesMax) {
-                    count = vertexCount;
-                } else if (vertexCount > verticesMax && meshCount == meshIndex + 1) {
-                    count = vertexCount % verticesMax;
+            if (transform.childCount == meshArray.Length)
+            {
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    Transform child = transform.GetChild(i);
+                    child.GetComponent<MeshFilter>().mesh = meshArray[i];
                 }
-                
-                int[] subIndices = new int[count];
-                Parallel.For(0, count, i => {
-                    subIndices[i] = i;
-                });
-
-				Mesh mesh = new Mesh(); 
-				mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 1f);
-                mesh.vertices = meshInfos.vertices.Skip(meshIndex * verticesMax).Take(count).ToArray();
-                mesh.normals = meshInfos.normals.Skip(meshIndex * verticesMax).Take(count).ToArray();
-                mesh.colors = meshInfos.colors.Skip(meshIndex * verticesMax).Take(count).ToArray();
-				mesh.SetIndices(subIndices, topology, 0);
-
-                GameObject go = CreateGameObjectWithMesh(mesh, gameObject.name + "_" + meshIndex, transform);
-				
-				meshArray[meshIndex] = mesh;
-				transformArray[meshIndex] = go.transform;
-
-				index += count;
-				++meshIndex;
-			}
+            } else
+            {
+                for (int i = transform.childCount - 1; i >= 0; i--)
+                {
+                    Transform child = transform.GetChild(i);
+                    DestroyImmediate(child.gameObject);
+                }
+                for (int i = 0; i < meshArray.Length; i++)
+                {
+                    CreateGameObjectWithMesh(meshArray[i], gameObject.name + "_" + i, transform);
+                }
+            }
         }
-        
-		public int GetNearestPowerOfTwo (float x)
-		{
-			return (int)Mathf.Pow(2f, Mathf.Ceil(Mathf.Log(x) / Mathf.Log(2f)));
-		}
 
         public GameObject CreateGameObjectWithMesh(Mesh mesh, string name = "GeneratedMesh", Transform parent = null)
         {
@@ -121,11 +118,3 @@ namespace PointCloudExporter
         }
     }
 }
-
-/*for (int i = 0; i < uv2.Length; i++) {
-    float x = vertexIndex % resolution;
-    float y = Mathf.Floor(vertexIndex / (float)resolution);
-    uvs2[i] = new Vector2(x, y) / (float)resolution;
-    ++vertexIndex;
-});
-mesh.uv2 = uvs2;*/
