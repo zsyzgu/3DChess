@@ -62,15 +62,15 @@
 				float3 up = normalize(cross(tangent, pIn.normal));
 
 				pIn.vertex = mul(UNITY_MATRIX_VP, vertex + float4(tangent * -_Size / 1.5, 0));
-				pIn.texcoord = float2(-0.5,0);
+				pIn.texcoord = float2(-0.5, 0);
 				triStream.Append(pIn);
 
 				pIn.vertex = mul(UNITY_MATRIX_VP, vertex + float4(up * _Size, 0));
-				pIn.texcoord = float2(0.5,1.5);
+				pIn.texcoord = float2(0.5, 1.5);
 				triStream.Append(pIn);
 
 				pIn.vertex = mul(UNITY_MATRIX_VP, vertex + float4(tangent * _Size / 1.5, 0));
-				pIn.texcoord = float2(1.5,0);
+				pIn.texcoord = float2(1.5, 0);
 				triStream.Append(pIn);
 			}
 
