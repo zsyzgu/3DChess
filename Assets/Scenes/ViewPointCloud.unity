@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3dd6e211a576414aa153283a52ed083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shader: {fileID: 4800000, guid: eae061a4103dc0a4d86b6209ce23bc9c, type: 3}
+  shader: {fileID: 4800000, guid: ae2910b40e8de534d8a6ddd8e2c2a8e4, type: 3}
 --- !u!114 &150352954
 MonoBehaviour:
   m_ObjectHideFlags: 0
