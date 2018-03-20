@@ -314,6 +314,7 @@
     <Compile Include="Assets\Scripts\ConnectWithKinect\View2D.cs" />
     <Compile Include="Assets\Scripts\ConnectWithKinect\View3D.cs" />
     <Compile Include="Assets\Scripts\EnablePointSize.cs" />
+    <Compile Include="Assets\Scripts\MeshGenerator.cs" />
     <Compile Include="Assets\Scripts\MeshInfos.cs" />
     <Compile Include="Assets\Scripts\PointCloudGenerator.cs" />
     <Compile Include="Assets\Scripts\ShowFPS.cs" />
@@ -323,6 +324,7 @@
   <ItemGroup>
     <None Include="Assets\Shaders\PointCloud.shader" />
     <None Include="Assets\Shaders\Simple.shader" />
+    <None Include="Assets\Shaders\StandardVertex.shader" />
     <None Include="Assets\Shaders\VertexColor.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

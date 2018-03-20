@@ -121,8 +121,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 150352952}
-  - component: {fileID: 150352953}
   - component: {fileID: 150352954}
+  - component: {fileID: 150352953}
   m_Layer: 0
   m_Name: Object
   m_TagString: Untagged
@@ -136,13 +136,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 150352951}
-  m_LocalRotation: {x: 0.53729963, y: 0, z: 0, w: 0.8433915}
-  m_LocalPosition: {x: 0, y: 0, z: -0.08}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 65, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &150352953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,13 +151,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 150352951}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07e40852c1e2da544b432f1c5692c5a0, type: 3}
+  m_Script: {fileID: 11500000, guid: b3dd6e211a576414aa153283a52ed083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: scene.pcd
-  size: 0.004
-  sprite: {fileID: 10904, guid: 0000000000000000f000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 8304ab2900e5c7a40b998b21fc2e593a, type: 3}
+  shader: {fileID: 4800000, guid: eae061a4103dc0a4d86b6209ce23bc9c, type: 3}
 --- !u!114 &150352954
 MonoBehaviour:
   m_ObjectHideFlags: 0

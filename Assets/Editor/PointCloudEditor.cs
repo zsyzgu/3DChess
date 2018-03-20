@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections;
 using UnityEngine;
 using UnityEditor;
-using PointCloudExporter;
 
 [CustomEditor(typeof(PointCloudGenerator))]
 public class PointCloudEditor : Editor {

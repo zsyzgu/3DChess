@@ -392,6 +392,7 @@
   <ItemGroup>
     <None Include="Assets\Shaders\PointCloud.shader" />
     <None Include="Assets\Shaders\Simple.shader" />
+    <None Include="Assets\Shaders\StandardVertex.shader" />
     <None Include="Assets\Shaders\VertexColor.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
