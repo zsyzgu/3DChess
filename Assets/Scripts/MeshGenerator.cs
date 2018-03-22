@@ -19,7 +19,7 @@ public class MeshGenerator : MonoBehaviour {
 
     void Update()
     {
-        meshList = CallPCL.getMesh(verticesMax);
+        CallPCL.getMesh(ref meshList, verticesMax);
         Generate();
         if (Input.GetKey(KeyCode.R))
         {
@@ -57,38 +57,54 @@ public class MeshGenerator : MonoBehaviour {
             meshArray = new Mesh[meshList.Count];
         }
 
+
         for (int i = 0; i < meshList.Count; i++)
         {
             MeshInfos meshInfo = meshList[i];
             int count = meshInfo.vertexCount;
-            int[] indices = new int[count];
-            int[] tris = new int[count];
-            for (int j = 0; j < count; j++) {
-                indices[j] = j;
-                int res = j % 3;
-                if (res == 0) {
-                    tris[j] = j;
-                } else if (res == 1) {
-                    tris[j] = j + 1;
-                } else {
-                    tris[j] = j - 1;
-                }
-            }
-            if (meshArray[i] == null)
-            {
+            
+            if (meshArray[i] == null) {
                 meshArray[i] = new Mesh();
             }
             Mesh mesh = meshArray[i];
-            if (mesh.vertexCount != meshInfo.vertices.Length)
-            {
+            if (mesh.vertexCount != meshInfo.vertices.Length) {
                 mesh.Clear();
             }
             mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 16f);
+
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //stopwatch.Start();
+
             mesh.vertices = meshInfo.vertices;
             mesh.colors = meshInfo.colors;
-            mesh.SetIndices(indices, MeshTopology.Points, 0);
-            mesh.SetTriangles(tris, 0);
-            mesh.RecalculateNormals();
+
+            //stopwatch.Stop();
+            //Debug.Log(stopwatch.Elapsed.TotalMilliseconds);
+
+            if (mesh.GetIndices(0) != null && mesh.GetIndices(0).Length != count)
+            {
+                int[] indices = new int[count];
+                int[] tris = new int[count];
+                Parallel.For(0, count, j => {
+                    indices[j] = j;
+                    int res = j % 3;
+                    if (res == 0)
+                    {
+                        tris[j] = j;
+                    }
+                    else if (res == 1)
+                    {
+                        tris[j] = j + 1;
+                    }
+                    else
+                    {
+                        tris[j] = j - 1;
+                    }
+                });
+                mesh.SetIndices(indices, MeshTopology.Points, 0);
+                mesh.SetTriangles(tris, 0);
+            }
+
         }
 
         if (transform.childCount == meshArray.Length)

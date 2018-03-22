@@ -26,7 +26,7 @@ public class PointCloudGenerator : MonoBehaviour
 
     void Update()
     {
-        meshList = CallPCL.getMesh(verticesMax);
+        CallPCL.getMesh(ref meshList, verticesMax);
         Generate();
         if (Input.GetKey(KeyCode.R))
         {

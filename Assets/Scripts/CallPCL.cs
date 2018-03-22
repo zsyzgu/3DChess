@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 public class CallPCL : MonoBehaviour
 {
-    const int BUFFER_SIZE = 30000000;
+    //const int BUFFER_SIZE = 30000000;
     const int POINT_BYTES = 16;
 
-    static byte[] buffer = new byte[BUFFER_SIZE];
+    //static byte[] buffer = new byte[BUFFER_SIZE];
 
     [DllImport("pc-recog", EntryPoint = "callStart")]
     public static extern void callStart();
@@ -31,44 +31,58 @@ public class CallPCL : MonoBehaviour
     [DllImport("pc-recog", EntryPoint = "callStop")]
     public static extern void callStop();
 
-    public static List<MeshInfos> getMesh(int vMax)
+    public static void getMesh(ref List<MeshInfos> meshList, int vMax)
     {
-        List<MeshInfos> meshList = new List<MeshInfos>();
-
-        IntPtr ptr = callUpdate();
-        Marshal.Copy(ptr, buffer, 0, 4);
-        int size = System.BitConverter.ToInt32(buffer, 0) * 3;
-
-        Marshal.Copy(ptr + 4, buffer, 0, size * POINT_BYTES);
-        for (int st = 0; st < size; st += vMax)
+        unsafe
         {
-            MeshInfos mesh = new MeshInfos();
-
-            int len = vMax;
-            if (size - st < len)
+            if (meshList == null)
             {
-                len = size - st;
+                meshList = new List<MeshInfos>();
             }
 
-            mesh.vertexCount = len;
-            mesh.vertices = new Vector3[len];
-            mesh.normals = new Vector3[len];
-            mesh.colors = new Color[len];
+            byte* ptr = (byte*)callUpdate();
+            int size = *((int*)ptr) * 3;
+            ptr = ptr + 4;
 
-            Parallel.For(0, len, i => {
-                int id = (st + i) * POINT_BYTES;
+            int meshId = 0;
+            for (int st = 0; st < size; st += vMax, meshId++)
+            {
+                if (meshId >= meshList.Count)
+                {
+                    meshList.Add(new MeshInfos());
+                }
+                MeshInfos mesh = meshList[meshId];
 
-                mesh.vertices[i].x = System.BitConverter.ToSingle(buffer, id + 0);
-                mesh.vertices[i].y = System.BitConverter.ToSingle(buffer, id + 4);
-                mesh.vertices[i].z = System.BitConverter.ToSingle(buffer, id + 8);
-                mesh.colors[i].r = (float)buffer[id + 12] / 255;
-                mesh.colors[i].g = (float)buffer[id + 13] / 255;
-                mesh.colors[i].b = (float)buffer[id + 14] / 255;
-            });
+                int len = vMax;
+                if (size - st < len)
+                {
+                    len = size - st;
+                }
 
-            meshList.Add(mesh);
+                if (mesh.vertexCount != len)
+                {
+                    mesh.vertexCount = len;
+                    mesh.vertices = new Vector3[len];
+                    mesh.colors = new Color[len];
+                }
+
+                Parallel.For(0, len, i => {
+                    int id = (st + i) * POINT_BYTES;
+                        
+                    byte* p = ptr + id;
+                    mesh.vertices[i].x = *((float*)p + 0);
+                    mesh.vertices[i].y = *((float*)p + 1);
+                    mesh.vertices[i].z = *((float*)p + 2);
+                    mesh.colors[i].r = (float)(*(p + 12)) / 255;
+                    mesh.colors[i].g = (float)(*(p + 13)) / 255;
+                    mesh.colors[i].b = (float)(*(p + 14)) / 255;
+                });
+            }
+
+            while (meshId < meshList.Count)
+            {
+                meshList.Remove(meshList[meshId]);
+            }
         }
-
-        return meshList;
     }
 }
