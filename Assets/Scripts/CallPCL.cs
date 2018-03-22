@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 public class CallPCL : MonoBehaviour
 {
     const int BUFFER_SIZE = 30000000;
-    const int POINT_BYTES = 15;
+    const int POINT_BYTES = 16;
 
     static byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -37,7 +37,7 @@ public class CallPCL : MonoBehaviour
 
         IntPtr ptr = callUpdate();
         Marshal.Copy(ptr, buffer, 0, 4);
-        int size = System.BitConverter.ToInt32(buffer, 0);
+        int size = System.BitConverter.ToInt32(buffer, 0) * 3;
 
         Marshal.Copy(ptr + 4, buffer, 0, size * POINT_BYTES);
         for (int st = 0; st < size; st += vMax)

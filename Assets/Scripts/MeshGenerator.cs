@@ -9,7 +9,7 @@ public class MeshGenerator : MonoBehaviour {
     public Shader shader;
 
     private List<MeshInfos> meshList;
-    private const int verticesMax = 64002;
+    private const int verticesMax = 64008;
     private Mesh[] meshArray = null;
 
     void Start()
@@ -35,6 +35,11 @@ public class MeshGenerator : MonoBehaviour {
         }
     }
 
+    void OnDestroy()
+    {
+        CallPCL.callStop();
+    }
+
     public void Generate()
     {
         if (meshArray == null || meshArray.Length != meshList.Count)
@@ -57,11 +62,9 @@ public class MeshGenerator : MonoBehaviour {
             MeshInfos meshInfo = meshList[i];
             int count = meshInfo.vertexCount;
             int[] indices = new int[count];
-            for (int j = 0; j < count; j++) {
-                indices[j] = j;
-            }
             int[] tris = new int[count];
             for (int j = 0; j < count; j++) {
+                indices[j] = j;
                 int res = j % 3;
                 if (res == 0) {
                     tris[j] = j;
